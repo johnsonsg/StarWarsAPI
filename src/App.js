@@ -1,9 +1,11 @@
 import React from 'react'
+import SWMovies from './SWMovies'
+import './App.css'
 
-export default function app() {
+export default function App() {
   return (
-    <div>
-      <h1>Fresh Theme</h1>
+    <div className='App'>
+      <SWMovies />
     </div>
   )
 }
