@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import MoviesList from './components/MoviesList'
 import './App.css'
 
@@ -7,7 +7,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  async function fetchMoviesHandler() {
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     // Note: when using async/await you must use Try/Catch to find errors.
@@ -15,7 +15,6 @@ function App() {
     // If using Axios,it would throw an error status, so you wouldn't have to use try/catch
     try {
       const response = await fetch(`https://swapi.dev/api/films/`)
-
       // Catch error and error message condition
       if (!response.ok) {
         throw new Error('Something went wrong :(') // the string is the 'message'
@@ -36,7 +35,12 @@ function App() {
       setError(error.message)
     }
     setIsLoading(false)
-  }
+  }, [])
+
+  // useEffect must be placed after the callback (useCallback)
+  useEffect(() => {
+    fetchMoviesHandler()
+  }, [fetchMoviesHandler])
 
   let content = <p>Found No Movies.</p>
 
@@ -57,17 +61,7 @@ function App() {
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
-      <section>
-        {/* {!isLoading && <MoviesList movies={movies} />} */}
-        {/* {!isLoading ? <MoviesList movies={movies} /> : 'Loading...'} */}
-
-        {/* {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {!isLoading && movies.length === 0 && !error && <p>Found No Movies.</p>}
-        {!isLoading && error && <p>{error}</p>}
-        {isLoading && <p>Loading...</p>} */}
-
-        {content}
-      </section>
+      <section>{content}</section>
     </React.Fragment>
   )
 }
