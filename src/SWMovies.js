@@ -1,18 +1,45 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import MoviesList from './components/MoviesList'
+import './App.css'
 
-export default function SWMovies() {
+function App() {
+  const [movies, setMovies] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  async function fetchMoviesHandler() {
+    setIsLoading(true)
+    const response = await fetch(`https://swapi.dev/api/films/`)
+    // console.log('RESPONSE', response)
+    const data = await response.json()
+    // console.log('DATA', data)
+
+    const transformedMovies = data.results.map(movieData => {
+      return {
+        id: movieData.episode_id,
+        title: movieData.title,
+        openingText: movieData.opening_crawl,
+        releaseDate: movieData.release_date
+      }
+    })
+
+    setMovies(transformedMovies) // If not restructuring use: data.results
+    setIsLoading(false)
+  }
+
   return (
-    <div>
-      <h1> Pick a Movie</h1>
-      <select>
-        <option value='1'>1</option>
-        <option value='2'>2</option>
-        <option value='3'>3</option>
-        <option value='4'>4</option>
-        <option value='5'>5</option>
-        <option value='6'>6</option>
-        <option value='7'>7</option>
-      </select>
-    </div>
+    <React.Fragment>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>
+        {/* {!isLoading && <MoviesList movies={movies} />} */}
+        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length === 0 && <p>Found No Movies.</p>}
+        {isLoading && <p>Loading...</p>}
+        {/* {!isLoading ? <MoviesList movies={movies} /> : 'Loading...'} */}
+      </section>
+    </React.Fragment>
   )
 }
+
+export default App
