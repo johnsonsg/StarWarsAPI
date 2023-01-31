@@ -14,7 +14,13 @@ function App() {
     // If you are not using asynce/await, then .then.catch promise should be used.
     // If using Axios,it would throw an error status, so you wouldn't have to use try/catch
     try {
-      const response = await fetch(`https://swapi.dev/api/film/`)
+      const response = await fetch(`https://swapi.dev/api/films/`)
+
+      // Catch error and error message condition
+      if (!response.ok) {
+        throw new Error('Something went wrong :(') // the string is the 'message'
+      }
+
       const data = await response.json()
 
       const transformedMovies = data.results.map(movieData => {
@@ -26,8 +32,24 @@ function App() {
         }
       })
       setMovies(transformedMovies) // If not restructuring use: data.results
-      setIsLoading(false)
-    } catch (error) {}
+    } catch (error) {
+      setError(error.message)
+    }
+    setIsLoading(false)
+  }
+
+  let content = <p>Found No Movies.</p>
+
+  if (movies.length > 0) {
+    content = <MoviesList movies={movies} />
+  }
+
+  if (error) {
+    content = <p>{error}</p>
+  }
+
+  if (isLoading) {
+    content = <p>Loading...</p>
   }
 
   return (
@@ -37,10 +59,14 @@ function App() {
       </section>
       <section>
         {/* {!isLoading && <MoviesList movies={movies} />} */}
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {!isLoading && movies.length === 0 && <p>Found No Movies.</p>}
-        {isLoading && <p>Loading...</p>}
         {/* {!isLoading ? <MoviesList movies={movies} /> : 'Loading...'} */}
+
+        {/* {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {!isLoading && movies.length === 0 && !error && <p>Found No Movies.</p>}
+        {!isLoading && error && <p>{error}</p>}
+        {isLoading && <p>Loading...</p>} */}
+
+        {content}
       </section>
     </React.Fragment>
   )
