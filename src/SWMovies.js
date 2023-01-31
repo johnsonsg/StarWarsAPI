@@ -5,25 +5,29 @@ import './App.css'
 function App() {
   const [movies, setMovies] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function fetchMoviesHandler() {
     setIsLoading(true)
-    const response = await fetch(`https://swapi.dev/api/films/`)
-    // console.log('RESPONSE', response)
-    const data = await response.json()
-    // console.log('DATA', data)
+    setError(null)
+    // Note: when using async/await you must use Try/Catch to find errors.
+    // If you are not using asynce/await, then .then.catch promise should be used.
+    // If using Axios,it would throw an error status, so you wouldn't have to use try/catch
+    try {
+      const response = await fetch(`https://swapi.dev/api/film/`)
+      const data = await response.json()
 
-    const transformedMovies = data.results.map(movieData => {
-      return {
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date
-      }
-    })
-
-    setMovies(transformedMovies) // If not restructuring use: data.results
-    setIsLoading(false)
+      const transformedMovies = data.results.map(movieData => {
+        return {
+          id: movieData.episode_id,
+          title: movieData.title,
+          openingText: movieData.opening_crawl,
+          releaseDate: movieData.release_date
+        }
+      })
+      setMovies(transformedMovies) // If not restructuring use: data.results
+      setIsLoading(false)
+    } catch (error) {}
   }
 
   return (
