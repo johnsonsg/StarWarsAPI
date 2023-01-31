@@ -1,11 +1,13 @@
 import React from 'react'
-import SWMovies from './SWMovies'
+// import FetchMovies from './FetchMovies'
+import Movies from './Movies'
 import './App.css'
 
 export default function App() {
   return (
     <div className='App'>
-      <SWMovies />
+      {/* <FetchMovies /> */}
+      <Movies />
     </div>
   )
 }
