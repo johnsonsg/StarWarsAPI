@@ -74,7 +74,7 @@ function App() {
       }
     )
     const data = await response.json()
-    // console.log('PostData', data)
+    console.log('PostData', data)
   }
 
   // Clean up inline content
